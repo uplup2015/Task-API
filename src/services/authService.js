@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../prisma');
+const AppError = require('../utils/AppError');
 
 const register = async (email, password, name) => {
     const existingUser = await prisma.user.findUnique({
@@ -8,7 +9,7 @@ const register = async (email, password, name) => {
     });
 
     if (existingUser) {
-        throw new Error('Email already in use');
+        throw new AppError('Email already in use', 409);
     }
 
     const hasedPassword = await bcrypt.hash(password, 10);
@@ -31,13 +32,13 @@ const login = async (email, password) => {
     })
 
     if (!user) {
-        throw new Error('Invalid email or password');
+        throw new AppError('Invalid email or password', 401);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-        throw new Error('Invalid email or password');
+        throw new AppError('Invalid email or password', 401);
     }
 
     const token = jwt.sign(
