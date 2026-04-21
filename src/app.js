@@ -3,7 +3,6 @@ require('dotenv').config();
 const prisma = require('./prisma');
 const authRoute = require('./routes/authRoute');
 const taskRoute = require('./routes/taskRoute');
-const authMiddleware = require('./middlewares/authMiddleware');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
